@@ -2,48 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
+    [SerializeField] new Rigidbody rigidbody;
+    [SerializeField] new Transform transform;
+    [SerializeField] new Collider collider;
+    [SerializeField] GameObject throwable;
+    [SerializeField] float MoveSpeed = 1;
+    [SerializeField] float JumpSpeed = 400;
 
-    [SerializeField]
-    new Rigidbody rigidbody;
+    float distToGround;
 
-    [SerializeField]
-    new Transform transform;
 
-    [SerializeField]
-    float CapSpeed = 1;
-
-	void Start ()
+    void Start()
     {
-		
-	}
+        distToGround = collider.bounds.extents.y;
+    }
 
-	void Update ()
+    void Update()
     {
-		
-	}
+
+    }
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+    }
 
     void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.W))
-        {
-            rigidbody.AddRelativeForce(0, 0, 10);
-            if(rigidbody.velocity.magnitude < CapSpeed)
-                rigidbody.velocity = rigidbody.velocity.normalized * CapSpeed;
-        }
-        else if(rigidbody.velocity.magnitude < CapSpeed)
-        {
-            rigidbody.velocity = new Vector3(0,rigidbody.velocity.y,0);
-        }
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-        {
-            Vector3 rot = transform.rotation.eulerAngles;
-            if(Input.GetKey(KeyCode.A))
-                rot.y -= 1;
-            if (Input.GetKey(KeyCode.D))
-                rot.y += 1;
-            transform.rotation = Quaternion.Euler(rot);
-        }
+            transform.Translate(0, 0, MoveSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.S))
+            transform.Translate(0, 0, -MoveSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.D))
+            transform.Rotate(0, 1, 0);
+            //transform.position += new Vector3(MoveSpeed, 0, 0) * Time.deltaTime;
+        if (Input.GetKey(KeyCode.A))
+            transform.Rotate(0, -1, 0);
+            //transform.position -= new Vector3(MoveSpeed, 0, 0) * Time.deltaTime;
+        if (Input.GetKey(KeyCode.Space) && IsGrounded())
+            rigidbody.AddForce(new Vector3(0, JumpSpeed, 0), ForceMode.Impulse);
 
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            GameObject nObj = (GameObject)Instantiate(throwable, transform.position, transform.rotation);
+            nObj.transform.Translate(0, 0.5f, 1.0f);
+            var rb = nObj.GetComponent<Rigidbody>();
+            var dir = nObj.transform.position - transform.position;
+            dir.y = 0;
+            dir.Normalize();
+            rb.AddForce(new Vector3(dir.x, 1, dir.z) * 10, ForceMode.Impulse);
+        }
     }
 }

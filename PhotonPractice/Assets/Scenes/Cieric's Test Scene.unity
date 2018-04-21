@@ -227,7 +227,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidbody: {fileID: 1303899216}
   transform: {fileID: 1303899220}
-  CapSpeed: 3
+  collider: {fileID: 1303899218}
+  MoveSpeed: 10
+  JumpSpeed: 10
 --- !u!54 &1303899216
 Rigidbody:
   m_ObjectHideFlags: 0
