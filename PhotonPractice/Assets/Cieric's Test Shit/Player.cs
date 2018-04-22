@@ -39,9 +39,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(photonView.isMine)
-            return;
-
         bool bs = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E);
         //
         if (bs)
