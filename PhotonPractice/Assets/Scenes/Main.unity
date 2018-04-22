@@ -623,7 +623,7 @@ MonoBehaviour:
   gameName: DickButtMcGee
   gameVersion: 0
   MaxPlayersPerRoom: 4
-  Loglevel: 2
+  Loglevel: 0
 --- !u!1 &1569795475
 GameObject:
   m_ObjectHideFlags: 0
