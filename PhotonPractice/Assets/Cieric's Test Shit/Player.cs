@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] new Collider collider;
     [SerializeField] GameObject throwable;
     [SerializeField] float MoveSpeed = 1;
+    [SerializeField] float RotSpeed = 1;
     [SerializeField] float JumpSpeed = 400;
     [SerializeField] GameObject CameraDolly;
     Transform CameraDollyTransform;
@@ -24,72 +25,60 @@ public class Player : MonoBehaviour
         CameraDollyTransform = CameraDolly.transform;
     }
 
-    void Update()
-    {
-    }
-
     bool IsGrounded()
     {
         return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        bool moved = false;
-
-        //if(Input.GetMouseButtonDown(1))
-        //    lastMousePosition = Input.mousePosition;
+        bool bs = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E);
+        //
+        
         if(Input.GetMouseButton(1))
         {
+            if(bs)
+            {
+                Vector3 temp = CameraDollyTransform.rotation.eulerAngles;
+                transform.rotation = Quaternion.Euler(0, temp.y, 0);
+                tempRotation.x = 0;
+            }
             Cursor.lockState = CursorLockMode.Locked;
             Vector2 mouseMovement = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-            tempRotation += mouseMovement;
-            // Debug.Log(tempRotation);
+            tempRotation += mouseMovement * RotSpeed * Time.deltaTime;
             CameraDollyTransform.rotation = new Quaternion();
-            //Vector3 temp = CameraDollyTransform.rotation.eulerAngles;
-            //CameraDollyTransform.rotation = Quaternion.Euler(temp.x, temp.y, 0);
             CameraDollyTransform.Rotate( 0, tempRotation.x, 0 );
             CameraDollyTransform.Rotate( -tempRotation.y, 0, 0 );
-            //lastMousePosition = Input.mousePosition;
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
+            tempRotation.x = 0;
         }
 
         if (Input.GetKey(KeyCode.W))
         {
             transform.Translate(0, 0, MoveSpeed * Time.deltaTime);
-            moved = true;
         }
+
         if (Input.GetKey(KeyCode.S))
         {
             transform.Translate(0, 0, -MoveSpeed * Time.deltaTime);
-            moved = true;
         }
+
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(0, 1, 0);
-            moved = true;
+            transform.Rotate(0, RotSpeed * Time.deltaTime, 0);
         }
-            //transform.position += new Vector3(MoveSpeed, 0, 0) * Time.deltaTime;
+
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(0, -1, 0);
-            moved = true;
+            transform.Rotate(0, -RotSpeed * Time.deltaTime, 0);
         }
-            //transform.position -= new Vector3(MoveSpeed, 0, 0) * Time.deltaTime;
+
         if (Input.GetKey(KeyCode.Space) && IsGrounded())
         {
             rigidbody.AddForce(new Vector3(0, JumpSpeed, 0), ForceMode.Impulse);
-            //moved = true;
-        }
-
-        if(moved || Input.GetKeyDown(KeyCode.E))
-        {
-            Vector3 temp = CameraDollyTransform.rotation.eulerAngles;
-            transform.rotation = Quaternion.Euler(0, temp.y, 0);
-            tempRotation.x = 0;
         }
 
         if(Input.GetKeyDown(KeyCode.E))
