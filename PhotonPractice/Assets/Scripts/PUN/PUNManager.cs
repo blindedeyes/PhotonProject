@@ -8,6 +8,8 @@ namespace BlindPUN
     public class PUNManager : Photon.PunBehaviour
     {
         [SerializeField]
+        GameObject playerPrefab;
+        [SerializeField]
         string typeName;
         [SerializeField]
         string gameName;
@@ -17,13 +19,20 @@ namespace BlindPUN
         byte MaxPlayersPerRoom = 4;
         [SerializeField]
         PhotonLogLevel Loglevel = PhotonLogLevel.Informational;
+
+        private GameObject localPlayer;
+
+        public GameObject localPlayerObject{
+            get{ return localPlayer;}
+        }
+
         void Awake()
         {
             PhotonNetwork.logLevel = Loglevel;
             // #Critical
             // we don't join the lobby. There is no need to join a lobby to get the list of rooms.
             PhotonNetwork.autoJoinLobby = false;
-            
+
             // #Critical
             // this makes sure we can use PhotonNetwork.LoadLevel() on the master client and all clients in the same room sync their level automatically
             PhotonNetwork.automaticallySyncScene = true;
@@ -32,7 +41,15 @@ namespace BlindPUN
         // Use this for initialization
         void Start()
         {
-            Connect();
+            //Connect();
+            // PhotonView view = GetComponent<PhotonView>();
+            // if(view == null){
+            //     //view = new PhotonView();
+            //     view = gameObject.AddComponent<PhotonView>();
+            //     view.
+            // }
+
+            localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
         }
 
         // Update is called once per frame
@@ -41,7 +58,7 @@ namespace BlindPUN
 
         }
 
-        void Connect()
+        public void Connect()
         {
             if (!PhotonNetwork.connected)
                 PhotonNetwork.ConnectUsingSettings(gameVersion);
@@ -52,6 +69,7 @@ namespace BlindPUN
         {
             //we have connected, now what.
         }
+
         public override void OnConnectedToMaster()
         {
             //PhotonNetwork.lobby
@@ -59,19 +77,61 @@ namespace BlindPUN
             PhotonNetwork.JoinLobby();
             PhotonNetwork.JoinRandomRoom();
         }
+
         public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)
         {
             PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = MaxPlayersPerRoom, PublishUserId = true }, TypedLobby.Default);
         }
+
         public override void OnJoinedLobby()
         {
-            
+
         }
+
         public override void OnJoinedRoom()
         {
-            //stuff and things
-            //Load game lobby scene stuff?
-            
+
+        }
+
+        void LoadArena()
+        {
+            if (!PhotonNetwork.isMasterClient)
+            {
+                Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
+                return;
+            }
+            Debug.Log("PhotonNetwork : Loading Level : " + PhotonNetwork.room.PlayerCount);
+            PhotonNetwork.LoadLevel(1);
+
+
+        }
+        public override void OnPhotonPlayerConnected(PhotonPlayer other)
+        {
+            Debug.Log("OnPhotonPlayerConnected() " + other.NickName); // not seen if you're the player connecting
+
+
+            // if (PhotonNetwork.isMasterClient)
+            // {
+            //     Debug.Log("OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient); // called before OnPhotonPlayerDisconnected
+
+
+            //     LoadArena();
+            // }
+        }
+
+
+        public override void OnPhotonPlayerDisconnected(PhotonPlayer other)
+        {
+            Debug.Log("OnPhotonPlayerDisconnected() " + other.NickName); // seen when other disconnects
+
+
+            // if (PhotonNetwork.isMasterClient)
+            // {
+            //     Debug.Log("OnPhotonPlayerDisonnected isMasterClient " + PhotonNetwork.isMasterClient); // called before OnPhotonPlayerDisconnected
+
+
+            //     LoadArena();
+            // }
         }
     }
 }
