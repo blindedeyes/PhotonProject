@@ -18,11 +18,12 @@ public class Player : MonoBehaviour
 
     //Vector2 lastMousePosition;
     Vector2 tempRotation = new Vector2();
-
+    PhotonView photonView;
     void Start()
     {
         distToGround = collider.bounds.extents.y;
         CameraDollyTransform = CameraDolly.transform;
+        photonView = GetComponent<PhotonView>();
     }
 
     bool IsGrounded()
@@ -32,6 +33,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if(photonView.isMine)
+            return;
+
         bool bs = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E);
         //
         if (bs)
@@ -74,7 +78,9 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            GameObject nObj = (GameObject)Instantiate(throwable, transform.position, transform.rotation);
+
+            //GameObject nObj = (GameObject)Instantiate(throwable, transform.position, transform.rotation);
+            GameObject nObj = PhotonNetwork.Instantiate(throwable.name,  transform.position, transform.rotation, 0);
             nObj.transform.Translate(0, 0.5f, 1.0f);
             nObj.transform.rotation = Random.rotationUniform;
             var rb = nObj.GetComponent<Rigidbody>();
