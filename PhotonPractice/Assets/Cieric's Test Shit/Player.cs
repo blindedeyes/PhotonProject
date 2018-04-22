@@ -24,6 +24,12 @@ public class Player : MonoBehaviour
         distToGround = collider.bounds.extents.y;
         CameraDollyTransform = CameraDolly.transform;
         photonView = GetComponent<PhotonView>();
+
+        if(!photonView.isMine){
+            this.enabled = false;
+            CameraDollyTransform.gameObject.SetActive(false);
+        }
+
     }
 
     bool IsGrounded()
