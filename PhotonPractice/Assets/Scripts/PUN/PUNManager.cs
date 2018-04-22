@@ -28,6 +28,7 @@ namespace BlindPUN
 
         void Awake()
         {
+            DontDestroyOnLoad(gameObject);
             PhotonNetwork.logLevel = Loglevel;
             // #Critical
             // we don't join the lobby. There is no need to join a lobby to get the list of rooms.
@@ -49,7 +50,6 @@ namespace BlindPUN
             //     view.
             // }
 
-            localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
         }
 
         // Update is called once per frame
@@ -74,23 +74,41 @@ namespace BlindPUN
         {
             //PhotonNetwork.lobby
             //PhotonNetwork.CreateRoom(null, new RoomOptions() { }, LobbyType);
+            Debug.Log("Connected to Master.");
             PhotonNetwork.JoinLobby();
             PhotonNetwork.JoinRandomRoom();
         }
-
+        
+        public override void OnPhotonRandomJoinFailed(object[] codeAndMsg){
+            Debug.Log("Failed to join room.");
+            
+            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = MaxPlayersPerRoom, PublishUserId = true }, TypedLobby.Default);            
+        }
         public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)
         {
+            Debug.Log("Failed to join room.");
+            
             PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = MaxPlayersPerRoom, PublishUserId = true }, TypedLobby.Default);
         }
 
         public override void OnJoinedLobby()
         {
+            Debug.Log("OnJoinedLobby");
 
+        }
+
+        public override void OnCreatedRoom(){
+            Debug.Log("OnCreatedRoom");
+            
+            // localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);                        
         }
 
         public override void OnJoinedRoom()
         {
-
+            Debug.Log("OnJoinedRoom");
+            
+            localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
+            
         }
 
         void LoadArena()
