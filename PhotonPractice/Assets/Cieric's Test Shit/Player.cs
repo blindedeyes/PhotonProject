@@ -34,21 +34,24 @@ public class Player : MonoBehaviour
     {
         bool bs = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E);
         //
-        
-        if(Input.GetMouseButton(1))
+        if (bs)
         {
-            if(bs)
-            {
-                Vector3 temp = CameraDollyTransform.rotation.eulerAngles;
-                transform.rotation = Quaternion.Euler(0, temp.y, 0);
-                tempRotation.x = 0;
-            }
+            Vector3 temp = CameraDollyTransform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(0, temp.y, 0);
+            tempRotation.x = 0;
+            CameraDollyTransform.rotation = new Quaternion();
+            CameraDollyTransform.Rotate(0, tempRotation.x, 0);
+            CameraDollyTransform.Rotate(-tempRotation.y, 0, 0);
+        }
+
+        if (Input.GetMouseButton(1))
+        {
             Cursor.lockState = CursorLockMode.Locked;
             Vector2 mouseMovement = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             tempRotation += mouseMovement * RotSpeed * Time.deltaTime;
             CameraDollyTransform.rotation = new Quaternion();
-            CameraDollyTransform.Rotate( 0, tempRotation.x, 0 );
-            CameraDollyTransform.Rotate( -tempRotation.y, 0, 0 );
+            CameraDollyTransform.Rotate(0, tempRotation.x, 0);
+            CameraDollyTransform.Rotate(-tempRotation.y, 0, 0);
         }
         else
         {
@@ -56,40 +59,39 @@ public class Player : MonoBehaviour
             tempRotation.x = 0;
         }
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.Translate(0, 0, MoveSpeed * Time.deltaTime);
-        }
+        Vector2 move =
+            new Vector2((Input.GetKey(KeyCode.D) ? 1 : 0) - (Input.GetKey(KeyCode.A) ? 1 : 0),
+                        (Input.GetKey(KeyCode.W) ? 1 : 0) - (Input.GetKey(KeyCode.S) ? 1 : 0)).normalized
+                        * MoveSpeed * Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.Translate(0, 0, -MoveSpeed * Time.deltaTime);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(0, RotSpeed * Time.deltaTime, 0);
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(0, -RotSpeed * Time.deltaTime, 0);
-        }
+        transform.Translate(move.x, 0, move.y);
 
         if (Input.GetKey(KeyCode.Space) && IsGrounded())
-        {
             rigidbody.AddForce(new Vector3(0, JumpSpeed, 0), ForceMode.Impulse);
-        }
 
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKey(KeyCode.LeftShift))
+            rigidbody.AddForce(new Vector3(0, -JumpSpeed, 0), ForceMode.Impulse);
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
             GameObject nObj = (GameObject)Instantiate(throwable, transform.position, transform.rotation);
             nObj.transform.Translate(0, 0.5f, 1.0f);
+            nObj.transform.rotation = Random.rotationUniform;
             var rb = nObj.GetComponent<Rigidbody>();
             var dir = nObj.transform.position - transform.position;
+            rb.angularVelocity = new Vector3(Random.value * 2.0f - 1f, 0, Random.value * 2.0f - 1f);
             dir.y = 0;
             dir.Normalize();
             rb.AddForce(new Vector3(dir.x, 1, dir.z) * 10, ForceMode.Impulse);
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.name == "Capsule(Clone)")
+        {
+            other.gameObject.GetComponent<Rigidbody>()
+            .AddExplosionForce(100, transform.position, 1.0f, 1.0f, ForceMode.Impulse);
         }
     }
 }
