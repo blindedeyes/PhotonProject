@@ -364,7 +364,7 @@ MonoBehaviour:
   rigidbody: {fileID: 54868065934295080}
   transform: {fileID: 4706858950112018}
   collider: {fileID: 136036259795542200}
-  throwable: {fileID: 1989730654763308, guid: 0ceea2226a048034793ae0aace50e926, type: 2}
+  throwable: {fileID: 1317137169994452, guid: 0da0c55a2c94d3247a918bfcc0b50743, type: 2}
   MoveSpeed: 10
   RotSpeed: 10
   JumpSpeed: 10

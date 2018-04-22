@@ -29,7 +29,10 @@ public class Player : MonoBehaviour
             this.enabled = false;
             CameraDollyTransform.gameObject.SetActive(false);
         }
-
+        else
+        {
+            GameObject.Find("DefaultCamera").SetActive(false);
+        }
     }
 
     bool IsGrounded()
@@ -80,19 +83,19 @@ public class Player : MonoBehaviour
             rigidbody.AddForce(new Vector3(0, -JumpSpeed, 0), ForceMode.Impulse);
 
         if (Input.GetKeyDown(KeyCode.E))
-        {
+            SpawnPotion();
+    }
 
-            //GameObject nObj = (GameObject)Instantiate(throwable, transform.position, transform.rotation);
-            GameObject nObj = PhotonNetwork.Instantiate(throwable.name,  transform.position, transform.rotation, 0);
-            nObj.transform.Translate(0, 0.5f, 1.0f);
-            nObj.transform.rotation = Random.rotationUniform;
-            var rb = nObj.GetComponent<Rigidbody>();
-            var dir = nObj.transform.position - transform.position;
-            rb.angularVelocity = new Vector3(Random.value * 2.0f - 1f, 0, Random.value * 2.0f - 1f);
-            dir.y = 0;
-            dir.Normalize();
-            rb.AddForce(new Vector3(dir.x, 1, dir.z) * 10, ForceMode.Impulse);
-        }
+    void SpawnPotion()
+    {
+        Vector3 startPos = transform.rotation * new Vector3(0f, 0.5f, 1.0f) + transform.position;
+        GameObject nObj = PhotonNetwork.Instantiate(throwable.name,  startPos, Random.rotationUniform, 0);
+        var rb = nObj.GetComponent<Rigidbody>();
+        var dir = nObj.transform.position - transform.position;
+        rb.angularVelocity = new Vector3(Random.value * 2.0f - 1f, 0, Random.value * 2.0f - 1f);
+        dir.y = 0;
+        dir.Normalize();
+        rb.AddForce(new Vector3(dir.x, 1, dir.z) * 10, ForceMode.Impulse);
     }
 
     void OnCollisionEnter(Collision other)
