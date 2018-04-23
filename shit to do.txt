@@ -1,0 +1,6 @@
+Death Ray:
+	2 color line renderer
+	Smoke particle effect
+	Dissolve shader on potions
+	Potion contents leak out onto ground.
+	

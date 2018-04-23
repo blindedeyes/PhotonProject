@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.name == "Capsule(Clone)")
+        if(other.gameObject.name == "Potion(Clone)")
         {
             other.gameObject.GetComponent<Rigidbody>()
             .AddExplosionForce(100, transform.position, 1.0f, 1.0f, ForceMode.Impulse);

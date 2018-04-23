@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 64753355231594322}
   - component: {fileID: 114253941463470664}
   - component: {fileID: 114120328986691354}
+  - component: {fileID: 114299368298236226}
   m_Layer: 0
   m_Name: Potion
   m_TagString: Untagged
@@ -90,12 +91,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1317137169994452}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.35154143, y: 3.079, z: 0.76790386}
+  m_LocalPosition: {x: -1.2288228, y: 2.508, z: 5.2846174}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 4654853941389976}
-  - {fileID: 4580728651565500}
   - {fileID: 4584102761236044}
+  - {fileID: 4580728651565500}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -110,7 +111,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4104131590704566}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4584102761236044
 Transform:
@@ -123,7 +124,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4104131590704566}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4654853941389976
 Transform:
@@ -289,7 +290,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
-  m_Mesh: {fileID: 4300000, guid: 598d2d5427144dd4995a88428a50d7a5, type: 3}
+  m_Mesh: {fileID: 4300000, guid: c4d195cc73205df4689858d92b44e725, type: 3}
 --- !u!114 &114104502256941814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -382,6 +383,17 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &114299368298236226
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1317137169994452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47fb3127e107eb34c98046af4f1fb11a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114770326424316902
 MonoBehaviour:
   m_ObjectHideFlags: 1
